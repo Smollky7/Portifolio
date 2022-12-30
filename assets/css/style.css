@@ -1519,9 +1519,20 @@ textarea.form-input::-webkit-resizer { display: none; }
   /**
    * #RESUME
    */
+
+.links-icon{
+  justify-content: center;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+  font-size: 20px;
+   }
+
+
 .link {
   text-decoration: none;
-  color: hsl(0, 24%, 71%);;
+  color: hsl(45, 100%, 71%);
     font-weight: var(--fw-300);
     line-height: 1.6;
 }
