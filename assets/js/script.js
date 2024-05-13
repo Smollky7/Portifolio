@@ -1,6 +1,22 @@
 'use strict';
 
 
+let docTitle = document.title;
+let favicon = document.querySelector("link[rel='icon']") || document.createElement('link');
+favicon.href = 'https://cdn.icon-icons.com/icons2/2000/PNG/512/crying_emoji_sad_icon_123390.png';
+favicon.type = 'image/png';
+favicon.rel = 'icon';
+document.head.appendChild(favicon);
+
+window.addEventListener('blur', () => {
+  document.title = 'Volte para mim!';
+  favicon.href = 'https://cdn.icon-icons.com/icons2/2000/PNG/512/crying_emoji_sad_icon_123390.png';
+});
+
+window.addEventListener('focus', () => {
+  document.title = docTitle;
+  favicon.href = 'https://cdn-icons-png.flaticon.com/512/9206/9206896.png';
+});
 
 // element toggle function
 const elementToggleFunc = function (elem) { elem.classList.toggle("active"); }
@@ -113,6 +129,28 @@ for (let i = 0; i < filterBtn.length; i++) {
 
 }
 
+// Função para calcular a idade com base na data de nascimento
+function calcularIdade(dataNascimento) {
+    const dataAtual = new Date();
+    const dataNasc = new Date(dataNascimento);
+    let idade = dataAtual.getFullYear() - dataNasc.getFullYear();
+    const mesAtual = dataAtual.getMonth();
+    const mesNasc = dataNasc.getMonth();
+    
+    // Verifica se o aniversário ainda não ocorreu este ano
+    if (mesAtual < mesNasc || (mesAtual === mesNasc && dataAtual.getDate() < dataNasc.getDate())) {
+        idade--;
+    }
+    
+    return idade;
+}
+
+// Chamada da função com a data de nascimento específica
+const idade = calcularIdade("2003-11-25");
+
+// Atualização do elemento HTML com a idade calculada
+const idadeElement = document.querySelector(".idade");
+idadeElement.textContent = idade + " anos";
 
 
 // contact form variables
