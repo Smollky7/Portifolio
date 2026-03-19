@@ -1,11 +1,4 @@
 import '@testing-library/jest-dom'
-import React, { act } from 'react'
-
-// React 19 removed React.act from the default export, but react-dom/test-utils still calls it
-if (!React.act) {
-  React.act = act
-}
-
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
