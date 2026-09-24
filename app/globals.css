@@ -319,28 +319,8 @@
   color: var(--accent-foreground);
 }
 
-/* Marquee animation */
-@keyframes marquee-left {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
-@keyframes marquee-right {
-  from {
-    transform: translate3d(-50%, 0, 0);
-  }
-  to {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
 .marquee-track { display: flex; width: max-content; will-change: transform; }
 .marquee-group { display: flex; flex: none; align-items: center; }
-.animate-marquee-left, .animate-marquee-right { animation: none; }
 
 @media (hover: hover) and (pointer: fine) {
   .contact-cta:hover .contact-hover-fill,

@@ -52,7 +52,7 @@ function MarqueeRow({ items, direction = "left" }: { items: string[]; direction?
 
   useAnimationFrame((_, delta) => {
     if (reducedMotion || !groupWidth) return
-    const speed = Math.max(42, Math.min(76, window.innerWidth * 0.045))
+    const speed = Math.max(42, Math.min(124, window.innerWidth * 0.065))
     const step = speed * (delta / 1000)
     let next = x.get() + (direction === "left" ? -step : step)
     if (direction === "left" && next <= -groupWidth) next += groupWidth

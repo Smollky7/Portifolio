@@ -20,12 +20,6 @@ export function Hero() {
   const sphereY = useSpring(pointerY, { stiffness: 55, damping: 24 })
   const contentOpacity = useTransform(scrollYProgress, [0, 0.62], [1, 0])
   const contentScrollY = useTransform(scrollYProgress, [0, 0.72], [0, -78])
-  // Keep the sphere alive while the hero leaves the viewport: it shrinks and
-  // repositions instead of looking pinned to its initial composition.
-  const sphereScale = useTransform(scrollYProgress, [0, 0.35, 1], [1, 0.9, 0.64])
-  const sphereScrollX = useTransform(scrollYProgress, [0, 1], [0, 72])
-  const sphereScrollY = useTransform(scrollYProgress, [0, 1], [0, 148])
-  const sphereRotate = useTransform(scrollYProgress, [0, 1], [0, 5])
   const spherePointerX = useTransform(sphereX, [-.5, .5], [-14, 14])
   const spherePointerY = useTransform(sphereY, [-.5, .5], [-10, 10])
   const particleX = useTransform(pointerX, [-.5, .5], [7, -7])
@@ -43,7 +37,7 @@ export function Hero() {
   }
 
   return <section id="home" ref={containerRef} className="hero-section scroll-section" onPointerMove={handlePointerMove} onPointerLeave={() => { pointerX.set(0); pointerY.set(0) }}>
-    <motion.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: .12, duration: 1.35, ease: editorialEase }} style={{ scale: sphereScale, x: sphereScrollX, y: sphereScrollY, rotate: sphereRotate }} className="hero-sphere" aria-hidden="true"><motion.div className="h-full w-full" style={{ x: spherePointerX, y: spherePointerY }}><SentientSphere /></motion.div></motion.div>
+    <motion.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: .12, duration: 1.35, ease: editorialEase }} className="hero-sphere" aria-hidden="true"><motion.div className="h-full w-full" style={{ x: spherePointerX, y: spherePointerY }}><SentientSphere /></motion.div></motion.div>
     <motion.div style={{ x: particleX, y: particleY }} className="hero-particles" aria-hidden="true" />
     <div className="hero-vignette" aria-hidden="true" />
 
