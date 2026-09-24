@@ -217,7 +217,7 @@
 .contact-cta { position: relative; display: block; overflow: hidden; padding: 5rem 1.25rem; }
 .contact-hover-fill, .contact-scroll-fill { position: absolute; inset: 0; z-index: 0; background: #2563eb; }
 .contact-hover-fill { transform: translateY(100%); transition: transform 600ms cubic-bezier(.16,1,.3,1); will-change: transform; }
-.contact-scroll-fill { display: none; }
+.contact-scroll-fill { display: block; transform: translateY(100%); will-change: transform; }
 .contact-content { position: relative; z-index: 2; margin: 0 auto; max-width: 100rem; }
 .contact-heading-row { display: flex; align-items: end; justify-content: space-between; gap: 1.5rem; margin-top: 1.5rem; }
 .contact-heading-row h2 { font-size: clamp(3rem, 9vw, 9rem); font-weight: 300; line-height: .82; letter-spacing: -.05em; text-transform: uppercase; }
@@ -340,8 +340,7 @@
 
 .marquee-track { display: flex; width: max-content; will-change: transform; }
 .marquee-group { display: flex; flex: none; align-items: center; }
-.animate-marquee-left { animation: marquee-left 50s linear infinite; }
-.animate-marquee-right { animation: marquee-right 50s linear infinite; }
+.animate-marquee-left, .animate-marquee-right { animation: none; }
 
 @media (hover: hover) and (pointer: fine) {
   .contact-cta:hover .contact-hover-fill,

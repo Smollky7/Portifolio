@@ -1,12 +1,15 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, useScroll, useTransform } from "framer-motion"
 import { ArrowUpRight } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { CONTACT_EMAIL, CONTACT_URL, SITE_URL, socialLinks } from "@/data/site"
 
 export function Footer() {
   const [time, setTime] = useState("")
+  const footerRef = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({ target: footerRef, offset: ["start 92%", "start 42%"] })
+  const scrollFillY = useTransform(scrollYProgress, [0, 1], ["100%", "0%"] )
 
   useEffect(() => {
     const update = () => setTime(new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }).format(new Date()))
@@ -15,10 +18,10 @@ export function Footer() {
     return () => window.clearInterval(interval)
   }, [])
 
-  return <footer id="contact" className="scroll-section relative border-t border-white/10">
+  return <footer id="contact" ref={footerRef} className="scroll-section relative border-t border-white/10">
     <a href={CONTACT_URL} data-cursor-hover className="contact-cta group">
       <span className="contact-hover-fill" aria-hidden="true" />
-      <motion.span className="contact-scroll-fill" initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ amount: .62 }} transition={{ duration: .75, ease: [0.16, 1, 0.3, 1] }} aria-hidden="true" />
+      <motion.span className="contact-scroll-fill" style={{ y: scrollFillY }} aria-hidden="true" />
       <div className="contact-content">
         <p className="section-kicker contact-kicker">08 — CONTATO</p>
         <div className="contact-heading-row">
