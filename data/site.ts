@@ -4,7 +4,7 @@ export const socialLinks = {
   linkedin: "https://www.linkedin.com/in/jardelsousadev",
   github: "https://github.com/Smollky7",
   instagram: "https://instagram.com/smollky7",
-  whatsapp: "https://wa.me/5538997394643",
+  whatsapp: "https://wa.me/q5538997394643",
 } as const
 
 export const CONTACT_URL = `${socialLinks.whatsapp}?text=${encodeURIComponent(
