@@ -1,11 +1,12 @@
 export const SITE_URL = "https://www.jardelsousadev.com.br"
-export const CONTACT_EMAIL = "jardelsousa.dev@gmail.com"
 
 export const socialLinks = {
   linkedin: "https://www.linkedin.com/in/jardelsousadev",
   github: "https://github.com/Smollky7",
   instagram: "https://instagram.com/smollky7",
+  whatsapp: "https://wa.me/5538997394643",
 } as const
 
-// Substitua pelo endereço wa.me somente quando o número comercial estiver confirmado.
-export const CONTACT_URL = `mailto:${CONTACT_EMAIL}`
+export const CONTACT_URL = `${socialLinks.whatsapp}?text=${encodeURIComponent(
+  "Olá, Jardel! Vi seu portfólio e gostaria de conversar sobre um projeto."
+)}`

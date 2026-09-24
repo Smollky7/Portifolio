@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion"
-import { socialLinks } from "@/data/site"
+import { CONTACT_URL, socialLinks } from "@/data/site"
 
 const navLinks = [
   { label: "Início", href: "#home" },
@@ -126,7 +126,7 @@ export function Navbar() {
             ))}
           </ul>
 
-          <a href="#contact" className="hidden rounded-full border border-white/15 px-4 py-2 font-mono text-xs uppercase tracking-wider text-white/70 transition-colors hover:border-blue-500 hover:text-white lg:block">Falar comigo ↗</a>
+          <a href={CONTACT_URL} target="_blank" rel="noopener noreferrer" className="hidden rounded-full border border-white/15 px-4 py-2 font-mono text-xs uppercase tracking-wider text-white/70 transition-colors hover:border-blue-500 hover:text-white lg:block">Falar comigo ↗</a>
 
           {/* Mobile Menu Button */}
           <button

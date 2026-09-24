@@ -37,7 +37,7 @@ export function Hero() {
   }
 
   return <section id="home" ref={containerRef} className="hero-section scroll-section" onPointerMove={handlePointerMove} onPointerLeave={() => { pointerX.set(0); pointerY.set(0) }}>
-    <motion.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: .12, duration: 1.35, ease: editorialEase }} className="hero-sphere" aria-hidden="true"><motion.div className="h-full w-full" style={{ x: spherePointerX, y: spherePointerY }}><SentientSphere /></motion.div></motion.div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .12, duration: 1.35, ease: editorialEase }} className="hero-sphere" aria-hidden="true"><motion.div className="absolute inset-0" style={{ x: spherePointerX, y: spherePointerY }}><SentientSphere /></motion.div></motion.div>
     <motion.div style={{ x: particleX, y: particleY }} className="hero-particles" aria-hidden="true" />
     <div className="hero-vignette" aria-hidden="true" />
 

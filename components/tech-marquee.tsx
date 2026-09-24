@@ -1,7 +1,6 @@
 "use client"
 
-import { motion, useAnimationFrame, useMotionValue, useReducedMotion } from "framer-motion"
-import { useEffect, useRef, useState } from "react"
+import { motion } from "framer-motion"
 
 const techItems = [
   "NEXT.JS",
@@ -30,38 +29,8 @@ const concepts = [
 ]
 
 function MarqueeRow({ items, direction = "left" }: { items: string[]; direction?: "left" | "right" }) {
-  const trackRef = useRef<HTMLDivElement>(null)
-  const firstGroupRef = useRef<HTMLDivElement>(null)
-  const x = useMotionValue(0)
-  const reducedMotion = Boolean(useReducedMotion())
-  const [groupWidth, setGroupWidth] = useState(0)
-
-  useEffect(() => {
-    const measure = () => setGroupWidth(firstGroupRef.current?.getBoundingClientRect().width ?? 0)
-    measure()
-    const observer = new ResizeObserver(measure)
-    if (firstGroupRef.current) observer.observe(firstGroupRef.current)
-    window.addEventListener("resize", measure)
-    return () => { observer.disconnect(); window.removeEventListener("resize", measure) }
-  }, [])
-
-  useEffect(() => {
-    if (!groupWidth) return
-    x.set(direction === "left" ? 0 : -groupWidth)
-  }, [direction, groupWidth, x])
-
-  useAnimationFrame((_, delta) => {
-    if (reducedMotion || !groupWidth) return
-    const speed = Math.max(42, Math.min(124, window.innerWidth * 0.065))
-    const step = speed * (delta / 1000)
-    let next = x.get() + (direction === "left" ? -step : step)
-    if (direction === "left" && next <= -groupWidth) next += groupWidth
-    if (direction === "right" && next >= 0) next -= groupWidth
-    x.set(next)
-  })
-
   const group = (copy: "primary" | "duplicate") => (
-    <div ref={copy === "primary" ? firstGroupRef : undefined} className="marquee-group" aria-hidden={copy === "duplicate" || undefined}>
+    <div className="marquee-group" aria-hidden={copy === "duplicate" || undefined}>
       {items.map((item) => (
         <span key={`${copy}-${item}`} className="tech-word group whitespace-nowrap font-sans text-3xl font-light tracking-tight md:text-7xl lg:text-8xl">
           {item}<span className="mx-4 md:mx-8 text-white/20">•</span>
@@ -72,10 +41,10 @@ function MarqueeRow({ items, direction = "left" }: { items: string[]; direction?
 
   return (
     <div className="relative overflow-hidden py-3 md:py-4">
-      <motion.div ref={trackRef} className="marquee-track" style={{ x }}>
+      <div className={`marquee-track ${direction === "left" ? "animate-marquee-left" : "animate-marquee-right"}`}>
         {group("primary")}
         {group("duplicate")}
-      </motion.div>
+      </div>
     </div>
   )
 }

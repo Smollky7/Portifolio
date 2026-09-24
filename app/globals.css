@@ -257,8 +257,12 @@
   .contact-cta { padding: 8rem 3rem; }
 }
 
+@media (min-width: 768px) {
+  .hero-copy { grid-column: 1 / -1; justify-self: center; width: min(100%, 37rem); }
+}
+
 @media (max-width: 767px) {
-  .hero-content { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto auto; gap: 1rem; padding: 5.75rem 1.25rem 1.5rem; }
+  .hero-content { grid-template-columns: 1fr; grid-template-rows: auto minmax(9rem, 1fr) auto; gap: 1rem; padding: 5.75rem 1.25rem 1rem; }
   .hero-heading-block { grid-column: 1; }
   .hero-title { max-width: 10ch; font-size: clamp(2.7rem, 12.8vw, 3.7rem); line-height: .84; }
   .hero-capability { grid-column: 1; grid-row: 2; align-self: end; justify-self: end; max-width: 12rem; padding-bottom: .5rem; text-align: right; }
@@ -277,6 +281,8 @@
   .contact-heading-row h2 { font-size: clamp(3rem, 15.5vw, 4.6rem); }
   .contact-heading-row p { line-height: 1.55; }
   .contact-arrow { width: 2.75rem; }
+  .section-blend { height: 5rem !important; margin-top: -5rem !important; }
+  #about { padding-top: 4rem; }
 }
 
 @media (hover: none), (pointer: coarse) {
@@ -322,6 +328,19 @@
 .marquee-track { display: flex; width: max-content; will-change: transform; }
 .marquee-group { display: flex; flex: none; align-items: center; }
 
+@keyframes marquee-left {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes marquee-right {
+  from { transform: translate3d(-50%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+.animate-marquee-left { animation: marquee-left 42s linear infinite; }
+.animate-marquee-right { animation: marquee-right 32s linear infinite; }
+
 @media (hover: hover) and (pointer: fine) {
   .contact-cta:hover .contact-hover-fill,
   .contact-cta:focus-visible .contact-hover-fill { transform: translateY(0); }
@@ -337,4 +356,6 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  .animate-marquee-left { animation: marquee-left 64s linear infinite !important; }
+  .animate-marquee-right { animation: marquee-right 49s linear infinite !important; }
 }
