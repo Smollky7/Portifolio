@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { Navbar } from "@/components/navbar"
 import { Hero } from "@/components/hero"
 import { About } from "@/components/about"
@@ -10,6 +11,11 @@ import { SectionBlend } from "@/components/section-blend"
 import { Services } from "@/components/services"
 import { Process } from "@/components/process"
 import { StructuredData } from "@/components/structured-data"
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: { url: "/" },
+}
 
 export default function Home() {
   return (

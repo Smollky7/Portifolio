@@ -155,7 +155,7 @@ export function Footer() {
           </nav>
 
           <p className="font-mono text-xs tracking-widest text-white/45">
-            © {new Date().getFullYear()} Smollky7
+            © {new Date().getFullYear()} Jardel Sousa / Smollky7
           </p>
         </div>
       </div>

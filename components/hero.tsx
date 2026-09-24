@@ -4,6 +4,7 @@ import dynamic from "next/dynamic"
 import { useRef, type PointerEvent } from "react"
 import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion"
 import { ArrowDownRight, ArrowUpRight } from "lucide-react"
+import { CONTACT_URL } from "@/data/site"
 
 const SentientSphere = dynamic(() => import("./sentient-sphere").then((module) => module.SentientSphere), { ssr: false, loading: () => <div className="hero-sphere-fallback" aria-hidden="true" /> })
 const editorialEase = [0.16, 1, 0.3, 1] as const
@@ -56,7 +57,7 @@ export function Hero() {
         <p>Desenvolvo soluções digitais sob medida para empresas — de sites profissionais a plataformas, sistemas e automações.</p>
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .98, duration: .65, ease: editorialEase }} className="hero-actions">
           <a href="#projects" data-cursor-hover className="hero-cta hero-cta-primary"><span>Ver projetos</span><ArrowDownRight aria-hidden="true" /></a>
-          <a href="#contact" data-cursor-hover className="hero-cta hero-cta-secondary"><span>Falar sobre um projeto</span><ArrowUpRight aria-hidden="true" /></a>
+          <a href={CONTACT_URL} target="_blank" rel="noopener noreferrer" data-cursor-hover className="hero-cta hero-cta-secondary"><span>Falar sobre um projeto</span><ArrowUpRight aria-hidden="true" /></a>
         </motion.div>
       </motion.div>
 

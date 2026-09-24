@@ -1,10 +1,13 @@
 export const SITE_URL = "https://www.jardelsousadev.com.br"
+export const SITE_NAME = "Jardel Sousa"
+export const ALTERNATE_NAME = "Smollky7"
+export const CONTACT_EMAIL = "jardelsousa.dev@gmail.com"
 
 export const socialLinks = {
   linkedin: "https://www.linkedin.com/in/jardelsousadev",
   github: "https://github.com/Smollky7",
   instagram: "https://instagram.com/smollky7",
-  whatsapp: "https://wa.me/q5538997394643",
+  whatsapp: "https://wa.me/5538997394643",
 } as const
 
 export const CONTACT_URL = `${socialLinks.whatsapp}?text=${encodeURIComponent(

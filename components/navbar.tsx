@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion"
 import { CONTACT_URL, socialLinks } from "@/data/site"
 
@@ -13,6 +14,7 @@ const navLinks = [
 ]
 
 export function Navbar() {
+  const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -20,6 +22,7 @@ export function Navbar() {
   const [lastScrollY, setLastScrollY] = useState(0)
   
   const { scrollY } = useScroll()
+  const homeHref = (hash = "") => pathname === "/" ? hash || "#home" : `/${hash}`
 
   // Detectar se e mobile
   useEffect(() => {
@@ -99,10 +102,12 @@ export function Navbar() {
         <nav className="flex items-center justify-between px-4 py-3 md:px-12 md:py-5">
           {/* Logo */}
           <a
-            href="#home"
+            href={homeHref()}
             onClick={(e) => {
-              e.preventDefault()
-              window.scrollTo({ top: 0, behavior: "smooth" })
+              if (pathname === "/") {
+                e.preventDefault()
+                window.scrollTo({ top: 0, behavior: "smooth" })
+              }
             }}
             className="group flex items-center gap-2 touch-manipulation"
           >
@@ -115,7 +120,7 @@ export function Navbar() {
             {navLinks.map((link, index) => (
               <li key={link.label}>
                 <a
-                  href={link.href}
+                  href={homeHref(link.href)}
                   className="group relative font-mono text-xs tracking-wider text-muted-foreground hover:text-foreground transition-colors duration-300"
                 >
                   <span className="text-accent mr-1">0{index + 1}</span>
@@ -165,7 +170,7 @@ export function Navbar() {
               {navLinks.map((link, index) => (
                 <motion.a
                   key={link.label}
-                  href={link.href}
+                  href={homeHref(link.href)}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 20 }}

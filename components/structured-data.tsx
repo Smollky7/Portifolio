@@ -1,4 +1,4 @@
-import { SITE_URL, socialLinks } from "@/data/site"
+import { ALTERNATE_NAME, SITE_NAME, SITE_URL, socialLinks } from "@/data/site"
 
 export function StructuredData() {
   const data = {
@@ -7,16 +7,19 @@ export function StructuredData() {
       {
         "@type": "Person",
         "@id": `${SITE_URL}/#person`,
-        name: "Jardel Sousa",
+        name: SITE_NAME,
+        alternateName: ALTERNATE_NAME,
         url: `${SITE_URL}/`,
-        jobTitle: "Desenvolvedor de soluções digitais",
+        jobTitle: "Desenvolvedor de sites, sistemas e automações",
+        knowsAbout: ["Sites profissionais", "Sistemas web", "Automações", "Integrações com APIs", "Software sob medida"],
         sameAs: [socialLinks.linkedin, socialLinks.github, socialLinks.instagram],
       },
       {
         "@type": "WebSite",
         "@id": `${SITE_URL}/#website`,
         url: `${SITE_URL}/`,
-        name: "Jardel Sousa — Sites, Sistemas e Automações",
+        name: `${SITE_NAME} — Sites, Sistemas e Automações`,
+        alternateName: `${ALTERNATE_NAME} — Portfólio`,
         inLanguage: "pt-BR",
         publisher: { "@id": `${SITE_URL}/#person` },
       },
