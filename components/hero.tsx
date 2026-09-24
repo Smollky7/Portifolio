@@ -1,102 +1,68 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
-import { SentientSphere } from "./sentient-sphere"
+import dynamic from "next/dynamic"
+import { useRef, type PointerEvent } from "react"
+import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion"
+import { ArrowDownRight, ArrowUpRight } from "lucide-react"
+
+const SentientSphere = dynamic(() => import("./sentient-sphere").then((module) => module.SentientSphere), { ssr: false, loading: () => <div className="hero-sphere-fallback" aria-hidden="true" /> })
+const editorialEase = [0.16, 1, 0.3, 1] as const
 
 export function Hero() {
   const containerRef = useRef<HTMLElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  })
+  const reducedMotion = Boolean(useReducedMotion())
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end start"] })
+  const pointerX = useMotionValue(0)
+  const pointerY = useMotionValue(0)
+  const textX = useSpring(pointerX, { stiffness: 80, damping: 28 })
+  const textY = useSpring(pointerY, { stiffness: 80, damping: 28 })
+  const sphereX = useSpring(pointerX, { stiffness: 55, damping: 24 })
+  const sphereY = useSpring(pointerY, { stiffness: 55, damping: 24 })
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.62], [1, 0])
+  const contentScrollY = useTransform(scrollYProgress, [0, 0.72], [0, -78])
+  const sphereScale = useTransform(scrollYProgress, [0, 0.85], [1, 0.76])
+  const sphereScrollY = useTransform(scrollYProgress, [0, 1], [0, 96])
+  const spherePointerX = useTransform(sphereX, [-.5, .5], [-14, 14])
+  const spherePointerY = useTransform(sphereY, [-.5, .5], [-10, 10])
+  const particleX = useTransform(pointerX, [-.5, .5], [7, -7])
+  const particleY = useTransform(pointerY, [-.5, .5], [5, -5])
+  const headingX = useTransform(textX, [-.5, .5], [-4, 4])
+  const headingY = useTransform(textY, [-.5, .5], [-3, 3])
 
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8])
+  const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
+    if (reducedMotion || event.pointerType === "touch") return
+    const bounds = event.currentTarget.getBoundingClientRect()
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5
+    pointerX.set(x)
+    pointerY.set(y)
+  }
 
-  return (
-    <section ref={containerRef} className="relative h-[100dvh] w-full overflow-hidden bg-[#050505]">
-      {/* 3D Sphere Background */}
-      <div className="absolute inset-0 touch-manipulation">
-        <SentientSphere />
-      </div>
+  return <section id="home" ref={containerRef} className="hero-section scroll-section" onPointerMove={handlePointerMove} onPointerLeave={() => { pointerX.set(0); pointerY.set(0) }}>
+    <motion.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: .12, duration: 1.35, ease: editorialEase }} style={{ scale: sphereScale, y: sphereScrollY }} className="hero-sphere" aria-hidden="true"><motion.div className="h-full w-full" style={{ x: spherePointerX, y: spherePointerY }}><SentientSphere /></motion.div></motion.div>
+    <motion.div style={{ x: particleX, y: particleY }} className="hero-particles" aria-hidden="true" />
+    <div className="hero-vignette" aria-hidden="true" />
 
-      {/* Typography Overlay */}
-      <motion.div 
-        style={{ opacity, scale }} 
-        className="relative z-10 h-full flex flex-col justify-between p-5 pt-20 pb-8 md:p-12 md:px-12 md:py-20"
-      >
-        {/* Top Left */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-        >
-          <p className="font-mono text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] text-muted-foreground mb-1 md:mb-2">
-            01 — JARDEL SOUSA
-          </p>
-          <h2 className="font-sans text-3xl md:text-6xl lg:text-7xl font-light tracking-tight text-balance">
-            FULL STACK
-            <br />
-            <span className="italic">DEVELOPER</span>
-          </h2>
-        </motion.div>
+    <motion.div style={{ opacity: contentOpacity, y: contentScrollY }} className="hero-content">
+      <motion.div style={{ x: headingX, y: headingY }} className="hero-heading-block">
+        <motion.p initial={{ opacity: 0, x: -18 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .28, duration: .65, ease: editorialEase }} className="section-kicker mb-4">01 — JARDEL SOUSA</motion.p>
+        <h1 className="hero-title" aria-label="Sites, sistemas e automações">
+          <span className="hero-title-line hero-title-line-primary"><motion.span initial={{ y: "115%" }} animate={{ y: 0 }} transition={{ delay: .4, duration: .86, ease: editorialEase }}>Sites, sistemas</motion.span></span>
+          <span className="hero-title-line hero-title-line-accent"><motion.span initial={{ y: "115%" }} animate={{ y: 0 }} transition={{ delay: .57, duration: .9, ease: editorialEase }}>&amp; automações</motion.span></span>
+        </h1>
+      </motion.div>
 
-        {/* Center Button */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
-        >
-          <motion.button
-            data-cursor-hover
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => {
-              document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' })
-            }}
-            className="relative px-6 py-3 md:px-8 md:py-4 border border-white/20 rounded-full font-mono text-xs md:text-sm tracking-widest uppercase bg-transparent backdrop-blur-sm hover:bg-white hover:text-black active:bg-white active:text-black transition-colors duration-500 touch-manipulation"
-          >
-            Explorar
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-[#2563eb] rounded-full animate-pulse" />
-          </motion.button>
-        </motion.div>
+      <motion.div initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .72, duration: .78, ease: editorialEase }} className="hero-capability"><p className="section-kicker">02 — CAPACIDADE</p><p>Software <span>sob medida</span></p></motion.div>
 
-        {/* Bottom Right */}
-        <motion.div
-          initial={{ opacity: 0, y: -40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="self-end text-right"
-        >
-          <p className="font-mono text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] text-muted-foreground mb-1 md:mb-2">
-            02 — ESPECIALIDADE
-          </p>
-          <h2 className="font-sans text-3xl md:text-6xl lg:text-7xl font-light tracking-tight text-balance">
-            FRONT-END
-            <br />
-            <span className="italic">& UI/UX</span>
-          </h2>
+      <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .82, duration: .75, ease: editorialEase }} className="hero-copy">
+        <p>Desenvolvo soluções digitais sob medida para empresas — de sites profissionais a plataformas, sistemas e automações.</p>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .98, duration: .65, ease: editorialEase }} className="hero-actions">
+          <a href="#projects" data-cursor-hover className="hero-cta hero-cta-primary"><span>Ver projetos</span><ArrowDownRight aria-hidden="true" /></a>
+          <a href="#contact" data-cursor-hover className="hero-cta hero-cta-secondary"><span>Falar sobre um projeto</span><ArrowUpRight aria-hidden="true" /></a>
         </motion.div>
       </motion.div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-10"
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-          className="flex flex-col items-center gap-2"
-        >
-          <span className="font-mono text-[9px] md:text-[10px] tracking-widest text-muted-foreground uppercase">Rolar</span>
-          <div className="w-px h-6 md:h-8 bg-gradient-to-b from-white/50 to-transparent" />
-        </motion.div>
-      </motion.div>
-    </section>
-  )
+      <motion.a href="#about" aria-label="Ir para a próxima seção" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.12, duration: .6 }} className="hero-scroll-indicator"><span>Explore</span><i aria-hidden="true" /></motion.a>
+    </motion.div>
+  </section>
 }

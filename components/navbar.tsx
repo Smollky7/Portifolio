@@ -1,11 +1,14 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion"
+import { socialLinks } from "@/data/site"
 
 const navLinks = [
+  { label: "Início", href: "#home" },
+  { label: "Soluções", href: "#services" },
+  { label: "Projetos", href: "#projects" },
   { label: "Sobre", href: "#about" },
-  { label: "Projetos", href: "#works" },
   { label: "Contato", href: "#contact" },
 ]
 
@@ -57,14 +60,6 @@ export function Navbar() {
     setLastScrollY(currentScrollY)
   })
 
-  const scrollToSection = useCallback((href: string) => {
-    setIsMenuOpen(false)
-    const element = document.querySelector(href)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
-    }
-  }, [])
-
   // Fechar menu ao redimensionar para desktop
   useEffect(() => {
     const handleResize = () => {
@@ -104,7 +99,7 @@ export function Navbar() {
         <nav className="flex items-center justify-between px-4 py-3 md:px-12 md:py-5">
           {/* Logo */}
           <a
-            href="#"
+            href="#home"
             onClick={(e) => {
               e.preventDefault()
               window.scrollTo({ top: 0, behavior: "smooth" })
@@ -116,35 +111,28 @@ export function Navbar() {
           </a>
 
           {/* Desktop Navigation */}
-          <ul className="hidden md:flex items-center gap-8">
+          <ul className="hidden md:flex items-center gap-5 lg:gap-8">
             {navLinks.map((link, index) => (
               <li key={link.label}>
-                <button
-                  onClick={() => scrollToSection(link.href)}
+                <a
+                  href={link.href}
                   className="group relative font-mono text-xs tracking-wider text-muted-foreground hover:text-foreground transition-colors duration-300"
                 >
                   <span className="text-accent mr-1">0{index + 1}</span>
                   {link.label.toUpperCase()}
                   <span className="absolute -bottom-1 left-0 w-0 h-px bg-foreground group-hover:w-full transition-all duration-300" />
-                </button>
+                </a>
               </li>
             ))}
           </ul>
 
-          {/* Status Indicator - Desktop */}
-          <div className="hidden md:flex items-center gap-3">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent" />
-            </span>
-            <span className="font-mono text-xs tracking-wider text-muted-foreground">DISPONIVEL PARA PROJETOS</span>
-          </div>
+          <a href="#contact" className="hidden rounded-full border border-white/15 px-4 py-2 font-mono text-xs uppercase tracking-wider text-white/70 transition-colors hover:border-blue-500 hover:text-white lg:block">Falar comigo ↗</a>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden relative w-10 h-10 flex flex-col items-center justify-center gap-1.5 touch-manipulation active:bg-white/5 rounded-lg transition-colors"
-            aria-label="Abrir menu"
+            aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
             aria-expanded={isMenuOpen}
           >
             <motion.span
@@ -175,18 +163,19 @@ export function Navbar() {
           >
             <nav className="flex flex-col items-center justify-center h-full gap-6 px-6">
               {navLinks.map((link, index) => (
-                <motion.button
+                <motion.a
                   key={link.label}
+                  href={link.href}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 20 }}
                   transition={{ delay: index * 0.1 }}
-                  onClick={() => scrollToSection(link.href)}
+                  onClick={() => setIsMenuOpen(false)}
                   className="group text-3xl font-sans tracking-tight text-foreground touch-manipulation active:text-accent transition-colors py-2"
                 >
                   <span className="text-accent font-mono text-sm mr-2">0{index + 1}</span>
                   {link.label}
-                </motion.button>
+                </motion.a>
               ))}
               
               {/* Status - Mobile Menu */}
@@ -211,7 +200,7 @@ export function Navbar() {
                 className="flex gap-6 mt-4"
               >
                 <a
-                  href="https://linkedin.com/in/jardelsousadev"
+                  href={socialLinks.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-mono text-xs tracking-wider text-muted-foreground active:text-accent transition-colors touch-manipulation py-2 px-3"
@@ -219,7 +208,7 @@ export function Navbar() {
                   LinkedIn
                 </a>
                 <a
-                  href="https://github.com/Smollky7"
+                  href={socialLinks.github}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-mono text-xs tracking-wider text-muted-foreground active:text-accent transition-colors touch-manipulation py-2 px-3"
