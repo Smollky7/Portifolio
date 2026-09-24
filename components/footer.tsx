@@ -97,7 +97,7 @@ export function Footer() {
 
       <div className="px-5 py-7 md:px-12">
         <div className="mx-auto flex max-w-[1600px] flex-col items-center justify-between gap-6 md:flex-row">
-          <p className="font-mono text-xs tracking-widest text-white/45">
+          <p className="font-mono text-xs tracking-widest text-white/65">
             HORA LOCAL
             <span className="ml-2 tabular-nums text-white">
               {time}
@@ -154,7 +154,7 @@ export function Footer() {
             </a>
           </nav>
 
-          <p className="font-mono text-xs tracking-widest text-white/45">
+          <p className="font-mono text-xs tracking-widest text-white/65">
             © {new Date().getFullYear()} Jardel Sousa / Smollky7
           </p>
         </div>

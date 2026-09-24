@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type MutableRefObject, type PointerEvent as ReactPointerEvent } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
-import { MathUtils } from "three"
+import { MathUtils, Vector2 } from "three"
 import type { Group, Mesh, Points, ShaderMaterial } from "three"
 import { useReducedMotion } from "framer-motion"
 
@@ -24,7 +24,7 @@ function OrganicSphere({ interaction, reducedMotion, detail }: { interaction: Mu
   const meshRef = useRef<Mesh>(null)
   const materialRef = useRef<ShaderMaterial>(null)
   const target = useRef({ x: 0, y: 0, interaction: 0 })
-  const uniforms = useMemo(() => ({ uTime: { value: 0 }, uMouse: { value: [0, 0] }, uInteraction: { value: 0 } }), [])
+  const uniforms = useMemo(() => ({ uTime: { value: 0 }, uMouse: { value: new Vector2() }, uInteraction: { value: 0 } }), [])
   useFrame((_, delta) => {
     const current = interaction.current
     target.current.x = MathUtils.lerp(target.current.x, current.x, 0.075)
@@ -32,7 +32,7 @@ function OrganicSphere({ interaction, reducedMotion, detail }: { interaction: Mu
     target.current.interaction = MathUtils.lerp(target.current.interaction, current.active, 0.065)
     if (materialRef.current) {
       materialRef.current.uniforms.uTime.value += delta * (reducedMotion ? 0.08 : 1)
-      materialRef.current.uniforms.uMouse.value = [target.current.x, target.current.y]
+      materialRef.current.uniforms.uMouse.value.set(target.current.x, target.current.y)
       materialRef.current.uniforms.uInteraction.value = target.current.interaction
     }
     if (meshRef.current) {
@@ -49,7 +49,7 @@ function Orbitals({ reducedMotion, mobile }: { reducedMotion: boolean; mobile: b
   const groupRef = useRef<Group>(null)
   const pointsRef = useRef<Points>(null)
   const points = useMemo(() => {
-    const count = mobile ? 28 : 54
+    const count = mobile ? 20 : 40
     const positions = new Float32Array(count * 3)
     for (let index = 0; index < count; index += 1) {
       const angle = (index / count) * Math.PI * 2
@@ -66,8 +66,8 @@ function Orbitals({ reducedMotion, mobile }: { reducedMotion: boolean; mobile: b
     if (pointsRef.current) pointsRef.current.rotation.y -= delta * 0.035
   })
   return <group ref={groupRef} rotation={[0.48, -0.18, -0.24]}>
-    <mesh><torusGeometry args={[2.15, 0.006, 4, mobile ? 96 : 180]} /><meshBasicMaterial color="#3b82f6" transparent opacity={0.22} depthWrite={false} /></mesh>
-    {!mobile && <mesh rotation={[0.35, 0.2, 0.72]}><torusGeometry args={[2.28, 0.004, 4, 180]} /><meshBasicMaterial color="#dbeafe" transparent opacity={0.1} depthWrite={false} /></mesh>}
+    <mesh><torusGeometry args={[2.15, 0.006, 4, mobile ? 72 : 128]} /><meshBasicMaterial color="#3b82f6" transparent opacity={0.22} depthWrite={false} /></mesh>
+    {!mobile && <mesh rotation={[0.35, 0.2, 0.72]}><torusGeometry args={[2.28, 0.004, 4, 128]} /><meshBasicMaterial color="#dbeafe" transparent opacity={0.1} depthWrite={false} /></mesh>}
     <points ref={pointsRef}><bufferGeometry><bufferAttribute attach="attributes-position" args={[points, 3]} /></bufferGeometry><pointsMaterial color="#3b82f6" size={mobile ? 0.022 : 0.018} transparent opacity={0.58} sizeAttenuation depthWrite={false} /></points>
   </group>
 }
@@ -75,6 +75,8 @@ function Orbitals({ reducedMotion, mobile }: { reducedMotion: boolean; mobile: b
 export function SentientSphere() {
   const [mounted, setMounted] = useState(false)
   const [mobile, setMobile] = useState(false)
+  const [active, setActive] = useState(true)
+  const containerRef = useRef<HTMLDivElement>(null)
   const reducedMotion = Boolean(useReducedMotion())
   const interaction = useRef<InteractionState>({ x: 0, y: 0, active: 0, touching: false })
   useEffect(() => {
@@ -84,16 +86,26 @@ export function SentientSphere() {
     media.addEventListener("change", update)
     return () => { window.cancelAnimationFrame(frame); media.removeEventListener("change", update) }
   }, [])
+  useEffect(() => {
+    const element = containerRef.current
+    if (!element) return
+    let intersecting = true
+    const update = () => setActive(intersecting && !document.hidden)
+    const observer = new IntersectionObserver(([entry]) => { intersecting = entry.isIntersecting; update() }, { rootMargin: "160px" })
+    const handleVisibility = () => update()
+    observer.observe(element)
+    document.addEventListener("visibilitychange", handleVisibility)
+    return () => { observer.disconnect(); document.removeEventListener("visibilitychange", handleVisibility) }
+  }, [])
   const updatePointer = (event: ReactPointerEvent<HTMLDivElement>, active = 0.7) => {
     const bounds = event.currentTarget.getBoundingClientRect()
     interaction.current.x = ((event.clientX - bounds.left) / bounds.width) * 2 - 1
     interaction.current.y = -(((event.clientY - bounds.top) / bounds.height) * 2 - 1)
     interaction.current.active = reducedMotion ? 0 : active
   }
-  if (!mounted) return <div className="h-full w-full" aria-hidden="true" />
-  return <div className="h-full w-full touch-pan-y" onPointerEnter={(event) => updatePointer(event, 0.35)} onPointerMove={(event) => updatePointer(event, interaction.current.touching ? 1 : 0.68)} onPointerDown={(event) => { interaction.current.touching = event.pointerType !== "mouse"; updatePointer(event, 1) }} onPointerUp={() => { interaction.current.touching = false; interaction.current.active = 0.25 }} onPointerCancel={() => { interaction.current.touching = false; interaction.current.active = 0 }} onPointerLeave={() => { interaction.current = { x: 0, y: 0, active: 0, touching: false } }}>
-    <Canvas camera={{ position: [0, 0, 5], fov: 45 }} dpr={mobile ? [1, 1.2] : [1, 1.65]} gl={{ antialias: !mobile, alpha: true, powerPreference: "high-performance" }} performance={{ min: 0.55 }}>
-      <OrganicSphere interaction={interaction} reducedMotion={reducedMotion} detail={mobile ? 24 : 48} /><Orbitals reducedMotion={reducedMotion} mobile={mobile} />
-    </Canvas>
+  return <div ref={containerRef} className="h-full w-full touch-pan-y" onPointerEnter={(event) => updatePointer(event, 0.35)} onPointerMove={(event) => updatePointer(event, interaction.current.touching ? 1 : 0.68)} onPointerDown={(event) => { interaction.current.touching = event.pointerType !== "mouse"; updatePointer(event, 1) }} onPointerUp={() => { interaction.current.touching = false; interaction.current.active = 0.25 }} onPointerCancel={() => { interaction.current.touching = false; interaction.current.active = 0 }} onPointerLeave={() => { interaction.current = { x: 0, y: 0, active: 0, touching: false } }}>
+    {mounted && <Canvas frameloop={active ? "always" : "never"} camera={{ position: [0, 0, 5], fov: 45 }} dpr={mobile ? 1 : [1, 1.35]} gl={{ antialias: !mobile, alpha: true, powerPreference: "high-performance" }} performance={{ min: 0.55 }}>
+      <OrganicSphere interaction={interaction} reducedMotion={reducedMotion} detail={mobile ? 12 : 18} /><Orbitals reducedMotion={reducedMotion} mobile={mobile} />
+    </Canvas>}
   </div>
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { useRef, type PointerEvent } from "react"
+import { useEffect, useRef, useState, type PointerEvent } from "react"
 import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion"
 import { ArrowDownRight, ArrowUpRight } from "lucide-react"
 import { CONTACT_URL } from "@/data/site"
@@ -11,6 +11,7 @@ const editorialEase = [0.16, 1, 0.3, 1] as const
 
 export function Hero() {
   const containerRef = useRef<HTMLElement>(null)
+  const [sphereReady, setSphereReady] = useState(false)
   const reducedMotion = Boolean(useReducedMotion())
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end start"] })
   const pointerX = useMotionValue(0)
@@ -28,6 +29,20 @@ export function Hero() {
   const headingX = useTransform(textX, [-.5, .5], [-4, 4])
   const headingY = useTransform(textY, [-.5, .5], [-3, 3])
 
+  useEffect(() => {
+    let cancelled = false
+    const mobile = window.matchMedia("(max-width: 767px)").matches
+    const reveal = () => { if (!cancelled) setSphereReady(true) }
+    const idleWindow = window as Window & { requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number; cancelIdleCallback?: (id: number) => void }
+    const idleId = idleWindow.requestIdleCallback?.(reveal, { timeout: mobile ? 1400 : 650 })
+    const timeoutId = idleId === undefined ? window.setTimeout(reveal, mobile ? 900 : 250) : undefined
+    return () => {
+      cancelled = true
+      if (idleId !== undefined) idleWindow.cancelIdleCallback?.(idleId)
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId)
+    }
+  }, [])
+
   const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
     if (reducedMotion || event.pointerType === "touch") return
     const bounds = event.currentTarget.getBoundingClientRect()
@@ -38,7 +53,7 @@ export function Hero() {
   }
 
   return <section id="home" ref={containerRef} className="hero-section scroll-section" onPointerMove={handlePointerMove} onPointerLeave={() => { pointerX.set(0); pointerY.set(0) }}>
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .12, duration: 1.35, ease: editorialEase }} className="hero-sphere" aria-hidden="true"><motion.div className="absolute inset-0" style={{ x: spherePointerX, y: spherePointerY }}><SentientSphere /></motion.div></motion.div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .12, duration: 1.35, ease: editorialEase }} className="hero-sphere" aria-hidden="true"><motion.div className="absolute inset-0" style={{ x: spherePointerX, y: spherePointerY }}>{sphereReady ? <SentientSphere /> : <div className="hero-sphere-fallback" />}</motion.div></motion.div>
     <motion.div style={{ x: particleX, y: particleY }} className="hero-particles" aria-hidden="true" />
     <div className="hero-vignette" aria-hidden="true" />
 
@@ -53,7 +68,7 @@ export function Hero() {
 
       <motion.div initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .72, duration: .78, ease: editorialEase }} className="hero-capability"><p className="section-kicker">02 — CAPACIDADE</p><p>Software <span>sob medida</span></p></motion.div>
 
-      <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .82, duration: .75, ease: editorialEase }} className="hero-copy">
+      <motion.div initial={{ y: 28 }} animate={{ y: 0 }} transition={{ delay: .3, duration: .75, ease: editorialEase }} className="hero-copy">
         <p>Desenvolvo soluções digitais sob medida para empresas — de sites profissionais a plataformas, sistemas e automações.</p>
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .98, duration: .65, ease: editorialEase }} className="hero-actions">
           <a href="#projects" data-cursor-hover className="hero-cta hero-cta-primary"><span>Ver projetos</span><ArrowDownRight aria-hidden="true" /></a>
