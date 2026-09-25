@@ -8,7 +8,7 @@ type IdleWindow = Window & typeof globalThis & {
   cancelIdleCallback?: (handle: number) => void
 }
 
-export function SmoothScroll({ children }: { children: ReactNode }) {
+export function SmoothScroll({ children, disableLenis = false }: { children: ReactNode; disableLenis?: boolean }) {
   const [reduceMotion, setReduceMotion] = useState(false)
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    if (reduceMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return
+    if (disableLenis || reduceMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return
 
     const idleWindow = window as IdleWindow
     let disposed = false
@@ -45,7 +45,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       if (timeoutId !== undefined) clearTimeout(timeoutId)
       lenis?.destroy()
     }
-  }, [reduceMotion])
+  }, [disableLenis, reduceMotion])
 
   return <MotionConfig reducedMotion={reduceMotion ? "always" : "user"}>{children}</MotionConfig>
 }

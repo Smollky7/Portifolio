@@ -9,7 +9,7 @@ import { CONTACT_URL } from "@/data/site"
 const SentientSphere = dynamic(() => import("./sentient-sphere").then((module) => module.SentientSphere), { ssr: false, loading: () => <div className="hero-sphere-fallback" aria-hidden="true" /> })
 const editorialEase = [0.16, 1, 0.3, 1] as const
 
-export function Hero() {
+export function Hero({ disableSphere = false }: { disableSphere?: boolean }) {
   const containerRef = useRef<HTMLElement>(null)
   const [sphereReady, setSphereReady] = useState(false)
   const reducedMotion = Boolean(useReducedMotion())
@@ -32,7 +32,7 @@ export function Hero() {
   useEffect(() => {
     let cancelled = false
     const mobile = window.matchMedia("(max-width: 767px)").matches
-    const reveal = () => { if (!cancelled) setSphereReady(true) }
+    const reveal = () => { if (!cancelled && !disableSphere) setSphereReady(true) }
     const idleWindow = window as Window & { requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number; cancelIdleCallback?: (id: number) => void }
     const idleId = idleWindow.requestIdleCallback?.(reveal, { timeout: mobile ? 1400 : 650 })
     const timeoutId = idleId === undefined ? window.setTimeout(reveal, mobile ? 900 : 250) : undefined
@@ -41,7 +41,7 @@ export function Hero() {
       if (idleId !== undefined) idleWindow.cancelIdleCallback?.(idleId)
       if (timeoutId !== undefined) window.clearTimeout(timeoutId)
     }
-  }, [])
+  }, [disableSphere])
 
   const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
     if (reducedMotion || event.pointerType === "touch") return
@@ -53,7 +53,7 @@ export function Hero() {
   }
 
   return <section id="home" ref={containerRef} className="hero-section scroll-section" onPointerMove={handlePointerMove} onPointerLeave={() => { pointerX.set(0); pointerY.set(0) }}>
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .12, duration: 1.35, ease: editorialEase }} className="hero-sphere" aria-hidden="true"><motion.div className="absolute inset-0" style={{ x: spherePointerX, y: spherePointerY }}>{sphereReady ? <SentientSphere /> : <div className="hero-sphere-fallback" />}</motion.div></motion.div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .12, duration: 1.35, ease: editorialEase }} className="hero-sphere" aria-hidden="true"><motion.div className="absolute inset-0" style={{ x: spherePointerX, y: spherePointerY }}>{sphereReady && !disableSphere ? <SentientSphere /> : <div className="hero-sphere-fallback" />}</motion.div></motion.div>
     <motion.div style={{ x: particleX, y: particleY }} className="hero-particles" aria-hidden="true" />
     <div className="hero-vignette" aria-hidden="true" />
 
