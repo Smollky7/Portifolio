@@ -1,12 +1,37 @@
 "use client"
 
 import { useEffect, useMemo, useRef, useState, type MutableRefObject, type PointerEvent as ReactPointerEvent } from "react"
-import { Canvas, useFrame } from "@react-three/fiber"
+import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { MathUtils, Vector2 } from "three"
 import type { Group, Mesh, Points, ShaderMaterial } from "three"
 import { useReducedMotion } from "framer-motion"
 
 type InteractionState = { x: number; y: number; active: number; touching: boolean }
+
+function FrameDriver({ active, fps }: { active: boolean; fps: number }) {
+  const invalidate = useThree((state) => state.invalidate)
+
+  useEffect(() => {
+    if (!active) return
+    let disposed = false
+    let timer = 0
+    const interval = 1000 / fps
+
+    const tick = () => {
+      if (disposed) return
+      invalidate()
+      timer = window.setTimeout(tick, interval)
+    }
+
+    tick()
+    return () => {
+      disposed = true
+      window.clearTimeout(timer)
+    }
+  }, [active, fps, invalidate])
+
+  return null
+}
 
 const vertexShader = `
 uniform float uTime; uniform vec2 uMouse; uniform float uInteraction;
@@ -104,7 +129,8 @@ export function SentientSphere() {
     interaction.current.active = reducedMotion ? 0 : active
   }
   return <div ref={containerRef} className="h-full w-full touch-pan-y" onPointerEnter={(event) => updatePointer(event, 0.35)} onPointerMove={(event) => updatePointer(event, interaction.current.touching ? 1 : 0.68)} onPointerDown={(event) => { interaction.current.touching = event.pointerType !== "mouse"; updatePointer(event, 1) }} onPointerUp={() => { interaction.current.touching = false; interaction.current.active = 0.25 }} onPointerCancel={() => { interaction.current.touching = false; interaction.current.active = 0 }} onPointerLeave={() => { interaction.current = { x: 0, y: 0, active: 0, touching: false } }}>
-    {mounted && <Canvas frameloop={active ? "always" : "never"} camera={{ position: [0, 0, 5], fov: 45 }} dpr={mobile ? 1 : [1, 1.35]} gl={{ antialias: !mobile, alpha: true, powerPreference: "high-performance" }} performance={{ min: 0.55 }}>
+    {mounted && <Canvas frameloop="demand" camera={{ position: [0, 0, 5], fov: 45 }} dpr={mobile ? 1 : [1, 1.35]} gl={{ antialias: !mobile, alpha: true, powerPreference: "high-performance" }} performance={{ min: 0.55 }}>
+      <FrameDriver active={active} fps={mobile ? 30 : 40} />
       <OrganicSphere interaction={interaction} reducedMotion={reducedMotion} detail={mobile ? 12 : 18} /><Orbitals reducedMotion={reducedMotion} mobile={mobile} />
     </Canvas>}
   </div>
