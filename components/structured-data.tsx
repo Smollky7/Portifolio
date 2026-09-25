@@ -10,7 +10,7 @@ export function StructuredData() {
         name: SITE_NAME,
         alternateName: ALTERNATE_NAME,
         url: `${SITE_URL}/`,
-        jobTitle: "Desenvolvedor de sites, sistemas e automações",
+        jobTitle: "Desenvolvedor de software",
         knowsAbout: ["Sites profissionais", "Sistemas web", "Automações", "Integrações com APIs", "Software sob medida"],
         sameAs: [socialLinks.linkedin, socialLinks.github, socialLinks.instagram],
       },

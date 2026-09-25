@@ -21,7 +21,7 @@ export function About() {
             <span className="about-reveal italic text-blue-500"><motion.span variants={{ hidden: { y: "110%" }, visible: { y: 0, transition: { duration: .85, ease: [0.16, 1, 0.3, 1] } } }}>produtos digitais.</motion.span></span>
           </h2>
           <div className="mt-10 grid gap-6 border-t border-white/10 pt-8 md:grid-cols-2">
-            <motion.p variants={{ hidden: { opacity: 0, x: -18 }, visible: { opacity: 1, x: 0, transition: { duration: .7 } } }} className="text-base leading-relaxed text-white/65">Desenvolvo produtos digitais do planejamento à implementação. Sites, sistemas, plataformas e automações pensados para resolver problemas reais e simplificar processos.</motion.p>
+            <motion.p variants={{ hidden: { opacity: 0, x: -18 }, visible: { opacity: 1, x: 0, transition: { duration: .7 } } }} className="text-base leading-relaxed text-white/65">Sou Jardel Sousa, desenvolvedor de software também conhecido como Smollky7. Desenvolvo produtos digitais do planejamento à implementação: sites, sistemas, plataformas e automações pensados para resolver problemas reais.</motion.p>
             <motion.p variants={{ hidden: { opacity: 0, x: 18 }, visible: { opacity: 1, x: 0, transition: { duration: .7 } } }} className="text-base leading-relaxed text-white/65">Front-end, back-end, UI/UX, integrações e automações entram como ferramentas para construir a solução certa — não como o centro da conversa.</motion.p>
           </div>
         </motion.div>

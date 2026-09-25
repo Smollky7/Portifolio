@@ -8,7 +8,7 @@ import { CONTACT_URL, socialLinks } from "@/data/site"
 const navLinks = [
   { label: "Início", href: "#home" },
   { label: "Soluções", href: "#services" },
-  { label: "Projetos", href: "#projects" },
+  { label: "Projetos", href: "/projetos" },
   { label: "Sobre", href: "#about" },
   { label: "Contato", href: "#contact" },
 ]
@@ -22,7 +22,7 @@ export function Navbar() {
   const [lastScrollY, setLastScrollY] = useState(0)
   
   const { scrollY } = useScroll()
-  const homeHref = (hash = "") => pathname === "/" ? hash || "#home" : `/${hash}`
+  const homeHref = (href = "") => href.startsWith("/") ? href : pathname === "/" ? href || "#home" : `/${href}`
 
   // Detectar se e mobile
   useEffect(() => {

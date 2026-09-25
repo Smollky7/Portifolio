@@ -39,7 +39,12 @@ export default function ProjectsPage() {
           {projects.map((project, index) => (
             <article key={project.slug} id={project.slug} className="seo-project">
               <div className="seo-project-index"><span>{String(index + 1).padStart(2, "0")}</span><p>{project.category}</p></div>
-              <div className="seo-project-copy"><h2>{project.title}</h2><p>{project.summary}</p><dl><div><dt>Problema</dt><dd>{project.problem}</dd></div><div><dt>Solução</dt><dd>{project.solution}</dd></div></dl><ul>{project.features.map((feature) => <li key={feature}>{feature}</li>)}</ul></div>
+              <div className="seo-project-copy">
+                <h2>{project.title}</h2><p>{project.summary}</p>
+                <dl><div><dt>Contexto</dt><dd>{project.context}</dd></div><div><dt>Necessidade</dt><dd>{project.problem}</dd></div><div><dt>Solução</dt><dd>{project.solution}</dd></div>{project.status ? <div><dt>Status</dt><dd>{project.status}</dd></div> : null}</dl>
+                <div className="seo-project-deliverables"><h3>O que foi desenvolvido</h3><ul>{project.features.map((feature) => <li key={feature}>{feature}</li>)}</ul></div>
+                {project.technologies?.length ? <div className="seo-project-technologies"><h3>Tecnologias relacionadas</h3><p>{project.technologies.join(" · ")}</p></div> : null}
+              </div>
               <div className="seo-project-media">
                 {project.images?.[0] ? <div className="seo-project-image"><Image src={project.images[0]} alt={project.imageAlts?.[0] ?? `Tela do projeto ${project.title}`} fill sizes="(max-width: 767px) 100vw, 38vw" className="object-contain" /></div> : <span aria-hidden="true">{project.title}</span>}
               </div>

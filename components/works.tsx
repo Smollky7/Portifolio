@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { useEffect, useRef, useState, type PointerEvent } from "react"
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion"
 import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react"
@@ -72,6 +73,7 @@ export function Works() {
       </AnimatePresence>
     </div>
 
+    <div className="mt-10 flex justify-end"><Link href="/projetos" className="hero-cta hero-cta-secondary"><span>Ver todos os projetos</span><ArrowUpRight aria-hidden="true" /></Link></div>
     <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}>{selected && <DialogContent className="max-h-[calc(100svh-1rem)] max-w-[min(1280px,calc(100%-1rem))] overflow-hidden border-white/15 bg-[#070707] p-0 shadow-2xl sm:max-h-[92svh]" showCloseButton><ProjectDetail project={selected} /></DialogContent>}</Dialog>
   </section>
 }
