@@ -174,7 +174,7 @@
 .hero-title-line { display: block; overflow: hidden; padding-right: .08em; }
 .hero-title-line > span { display: block; }
 .hero-title-line-primary { color: white; font-style: normal; }
-.hero-title-line-accent { color: rgb(255 255 255 / .68); font-size: .82em; font-style: italic; padding-top: .14em; margin-top: -.14em; }
+.hero-title-line-accent { color: rgb(255 255 255 / .68); font-size: .82em; font-style: italic; line-height: 1.187; padding-top: .14em; margin-top: -.14em; }
 .hero-capability { grid-column: 2; grid-row: 1; align-self: start; text-align: right; }
 .hero-capability > p:last-child { margin-top: .75rem; font-size: clamp(2rem, 3.2vw, 4rem); font-weight: 300; line-height: .92; text-transform: uppercase; }
 .hero-capability span { display: block; color: #3b82f6; font-style: italic; }
